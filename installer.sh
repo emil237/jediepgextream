@@ -2,15 +2,15 @@
 
 # SCRIPT : DOWNLOAD AND INSTALL jediepgextream #
 
-##setup command=wget https://raw.githubusercontent.com/emiln237/jediepgextream/main/installer.sh -O - | /bin/sh
+##setup command=wget https://raw.githubusercontent.com/emil237/jediepgextream/main/installer.sh -O - | /bin/sh
 #
 echo " download and install plugin jediepgextream "
 ################################################################################
-version=2.3
+version=2.07
 OPKGINSTALL=opkg install --force-overwrite
 MY_URL="https://raw.githubusercontent.com/emiln237/jediepgextream/main"
-MY_IPK="enigma2-plugin-extensions-jediepgxtream_2.3_all.ipk"
-MY_DEB="enigma2-plugin-extensions-jediepgxtream_2.3_all.deb"
+MY_IPK="enigma2-plugin-extensions-jediepgxtream_2.07_all.ipk"
+MY_DEB="enigma2-plugin-extensions-jediepgxtream_2.07_all.deb"
 ##############################################################################
 # remove old plugin #
 
@@ -30,7 +30,7 @@ set -e
  if which dpkg > /dev/null 2>&1; then
 		dpkg -i --force-overwrite $MY_DEB; apt-get install -f -y
 	else
-		opkg install --force-reinstall $MY_IPK
+		opkg install --force-overwrite $MY_IPK
 	fi
 echo "================================="
 set +e
@@ -49,6 +49,11 @@ echo "**************************************************************************
 wait
 killall -9 enigma2
 exit 0
+
+
+
+
+
 
 
 
