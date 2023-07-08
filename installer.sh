@@ -1,93 +1,87 @@
-#!/bin/bash
+#!/bin/sh
 
+# 
+#### Uploaded by: BEKO_73 ###
+### 
+EDIT SCRIPT BY:EMIL_NABIL TO WORK WITH PLUGIN JEDIEPGEXTRAM ###
 # SCRIPT : DOWNLOAD AND INSTALL jediepgextream #
+# 
+# Command: wget https://raw.githubusercontent.com/emilnabil/jediepgextream/main/installer.sh -O - | /bin/sh #
+# 
+#####################
+PACKAGE_DIR='jediepgextream/main'
+MY_IPK="enigma2-plugin-extensions-jediepgxtream_2.3_all.ipk"
+MY_DEB="enigma2-plugin-extensions-jediepgxtream_2.3_all.deb"
+# Auto ... Do not change
 
-##setup command=wget https://raw.githubusercontent.com/emil237/jediepgextream/main/installer.sh -O - | /bin/sh
-#
-echo " download and install plugin jediepgextream "
-################################################################################
-version=2.07
-OPKGINSTALL=opkg install --force-overwrite
-MY_URL="https://raw.githubusercontent.com/emiln237/jediepgextream/main"
-MY_IPK="enigma2-plugin-extensions-jediepgxtream_2.07_all.ipk"
-MY_DEB="enigma2-plugin-extensions-jediepgxtream_2.07_all.deb"
-##############################################################################
-# remove old plugin #
-
-rm -r /usr/lib/enigma2/python/Plugins/Extensions/JediEPGXtream
-
-#################################################################################
-
-# Download and install plugin #
-
-cd /tmp 
-
-set -e
-     wget "$MY_URL/$MY_IPK"
-  wait
-     wget "$MY_URL/$MY_DEB"
-
- if which dpkg > /dev/null 2>&1; then
-		dpkg -i --force-overwrite $MY_DEB; apt-get install -f -y
-	else
-		opkg install --force-overwrite $MY_IPK
-	fi
-echo "================================="
-set +e
-cd ..
-wait
-rm -f /tmp/$MY_IPK
-rm -f /tmp/$MY_DEB
-	if [ $? -eq 0 ]; then
-echo ">>>>  SUCCESSFULLY INSTALLED <<<<"
+# Decide : which package ?
+MY_MAIN_URL="https://raw.githubusercontent.com/emilnabil/"
+if which dpkg > /dev/null 2>&1; then
+	MY_FILE=$MY_DEB
+	MY_URL=$MY_MAIN_URL$PACKAGE_DIR'/'$MY_DEB
+else
+	MY_FILE=$MY_IPK
+	MY_URL=$MY_MAIN_URL$PACKAGE_DIR'/'$MY_IPK
 fi
-		echo "********************************************************************************"
-echo "   UPLOADED BY  >>>>   EMIL_NABIL "   
-sleep 4;
-		echo ". >>>>         RESTARING     <<<<"
-echo "**********************************************************************************"
-wait
-killall -9 enigma2
-exit 0
+MY_TMP_FILE="/tmp/"$MY_FILE
 
+echo ''
+echo 'welcome to jediepgextream'
+echo '**  STARTED  **'                                    
+echo ''
+echo "**********************************************************************"
+# Remove previous file (if any)
+rm -f $MY_TMP_FILE > /dev/null 2>&1
 
+# Download package file
+echo 'Downloading '$MY_FILE' ...'
 
+echo ''
+wget -T 2 $MY_URL -P "/tmp/"
 
+# Check download
+if [ -f $MY_TMP_FILE ]; then
+	# Install
+	echo ''
+	echo 'Installation started'
+	echo ''
+	if which dpkg > /dev/null 2>&1; then
+		apt-get install --reinstall $MY_TMP_FILE -y
+	else
+		opkg install --force-reinstall $MY_TMP_FILE
+	fi
+	MY_EM=$?
+	echo ''
+	echo ''
+	if [ $MY_EM -eq 0 ]; then
+		echo "   >>>>   SUCCESSFULLY INSTALLED   <<<<"
+		echo ''
+echo "
+  *****      *   *        *   *
+  *         * * * *       *   *
+  *****    *   *    *     *   *
+  *.      *           *   *   *
+  *****  *             *  *   ****** "
 
+		echo "   >>>>         RESTARING         <<<<"
+		if which systemctl > /dev/null 2>&1; then
+			sleep 2; systemctl restart enigma2
+		else
+			init 4; sleep 4; init 3;
+		fi
+	else
+		echo "   >>>>   INSTALLATION FAILED !   <<<<"
+	fi;
+	echo ''
+	echo '****************************************'
+	echo '**                   FINISHED                   **'
+	echo '****************************************'
+	echo ''
+	exit 0
+else
+	echo ''
+	echo "Download failed !"
+	exit 1
+fi
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+# --------------------------------------------------------------------------------------
